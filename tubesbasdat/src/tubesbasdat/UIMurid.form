@@ -161,7 +161,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="Namalabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Nama Murid    :"/>
+            <Property name="text" type="java.lang.String" value="Nama Murid:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="Kelaslabel">

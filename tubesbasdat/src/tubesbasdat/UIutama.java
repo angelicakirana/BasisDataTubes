@@ -5,7 +5,14 @@
  */
 package tubesbasdat;
 
+import atribut.siswa;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import atribut.*;
+import static java.awt.image.ImageObserver.WIDTH;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -29,8 +36,8 @@ public class UIutama extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        inPass = new javax.swing.JPasswordField();
-        inUname = new javax.swing.JTextField();
+        pass = new javax.swing.JPasswordField();
+        username = new javax.swing.JTextField();
         labelUname = new javax.swing.JLabel();
         labelPass = new javax.swing.JLabel();
         loginButton = new javax.swing.JButton();
@@ -39,14 +46,17 @@ public class UIutama extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        inPass.setText("jPasswordField1");
-        inPass.addActionListener(new java.awt.event.ActionListener() {
+        pass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inPassActionPerformed(evt);
+                passActionPerformed(evt);
             }
         });
 
-        inUname.setText("Masukkan Username");
+        username.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                usernameActionPerformed(evt);
+            }
+        });
 
         labelUname.setText("Username");
 
@@ -96,8 +106,8 @@ public class UIutama extends javax.swing.JFrame {
                             .addComponent(labelPass, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(inUname)
-                            .addComponent(inPass, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(username)
+                            .addComponent(pass, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(96, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -107,11 +117,11 @@ public class UIutama extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(inUname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelUname))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(inPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelPass))
                 .addGap(18, 18, 18)
                 .addComponent(loginButton)
@@ -121,18 +131,82 @@ public class UIutama extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void inPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inPassActionPerformed
+    private void passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_inPassActionPerformed
+    }//GEN-LAST:event_passActionPerformed
 
+    
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         //kalau yg login guru
-        UIGuru guru = new UIGuru();
-        guru.setVisible(true);
-        //kalau yg login murid
-        //UIMurid murid = new UIMurid();
-        //murid.setVisible(true);
+        Connect koneksi = new Connect();
+        Connection konek = koneksi.getConnection();
+        String login = username.getText();
+        String pass1;
+        pass1 = pass.getText();
+        String command;
+        if (login.substring(0, 1).equals("s")){
+            try {
+                siswa a = new siswa();
+                command = "select * from siswa where username = '"+login+"'";
+                Statement stat = konek.createStatement();
+                ResultSet hasil  = stat.executeQuery(command);
+                while (hasil.next()){
+                    a.password = hasil.getString("password");
+                    a.nis = hasil.getString("NIS");
+                    a.nama = hasil.getString("nama");
+                    a.angkatan = hasil.getInt("angkatan");
+                    a.no_hp = hasil.getString("no_hp");
+                    a.tempat_lahir = hasil.getString("tempat_lahir");
+                    a.tgl_lahir = hasil.getDate("tgl_lahir");
+                    a.alamat = hasil.getString("alamat");
+                    a.jk = hasil.getString("jenis_kelamin");
+            } 
+             if (pass1.equals(a.password)){
+                 UIMurid murid = new UIMurid(a);
+                 murid.setVisible(true);
+             }
+             else{
+                 JOptionPane.showMessageDialog(null, "Gagal Login, Coba Username atau Password Kembali", "Login Gagal", WIDTH);
+             }
+            }catch (SQLException ex) {
+                Logger.getLogger(UIutama.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        else if (login.substring(0, 1).equals("t")){
+            try {
+                guru a = new guru();
+                command = "select * from guru where username = '"+login+"'";
+                Statement stat = konek.createStatement();
+                ResultSet hasil  = stat.executeQuery(command);
+                while (hasil.next()){
+                    a.password = hasil.getString("password");
+                    a.nip = hasil.getString("NIP");
+                    a.nama = hasil.getString("nama");
+                    a.no_hp = hasil.getString("no_hp");
+                    a.alamat = hasil.getString("alamat");
+                    a.jk = hasil.getString("jk");
+                }
+                if (pass1.equals(a.password)){
+                    UIGuru guru = new UIGuru(a);
+                    guru.setVisible(true);
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Gagal Login, Coba Username atau Password Kembali", "Login Gagal", WIDTH);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(UIutama.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Gagal Login, Coba Username atau Password Kembali", "Login Gagal", WIDTH);
+        }
+        
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_usernameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -170,12 +244,12 @@ public class UIutama extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPasswordField inPass;
-    private javax.swing.JTextField inUname;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel labelPass;
     private javax.swing.JLabel labelUname;
     private javax.swing.JButton loginButton;
+    private javax.swing.JPasswordField pass;
+    private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 }
