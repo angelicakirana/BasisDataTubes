@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package tubesbasdat;
-import atribut.*;
+
 /**
  *
  * @author angelicakirana
@@ -81,7 +81,7 @@ public class UIMurid extends javax.swing.JFrame {
 
         UASlabel.setText("Nilai UAS        :");
 
-        Namalabel.setText("Nama Murid:");
+        Namalabel.setText("Nama Murid    :");
 
         Kelaslabel.setText("Kelas               :");
 
@@ -137,10 +137,7 @@ public class UIMurid extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    public UIMurid(siswa a) {
-        
-    }
+
     /**
      * @param args the command line arguments
      */
